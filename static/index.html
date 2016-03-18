@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<head>
+<meta charset="UTF-8">
+<title>首页</title>
+<link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+<script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/angular.js/1.4.9/angular.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style> body {font-family: 微软雅黑；}</style>
+</head>
+
+<body>
+<div class="container" ng-app="myApp" ng-controller="formCtrl">
+  <h2>摘要生成系统</h2>
+  <div class="row" >
+    <div class="col-xs-5">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">请输入正文</h3>
+        </div>
+        <div class="panel-body">
+          <form role="form" novalidate>
+            <textarea  ng-model="user.text" ng-blur="getSummary()" class="form-control" rows="35"></textarea>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-7">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h3 class="panel-title">摘要</h3>
+        </div>
+        <div class="panel-body">
+          关键词:<ul><span ng-bind-html="user.keywords"></span></ul>
+          关键句:
+          <ol>
+          <span ng-bind-html="user.sentences"></span>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+var app = angular.module('myApp', []);
+app.controller('formCtrl', function($scope, $http, $sce) {
+	$scope.getSummary = function () {
+        // POST提交数据到接口，/api/getSummary
+        var mydata = new Object();
+        mydata.text = $scope.user.text;
+		$http.post('/api/getSummary/', mydata)
+        .success(function(data){
+            // 输出数据keywords
+            var results = "";
+            angular.forEach(data.keywords, function(keyword){
+                results = results + keyword + "  " ;
+            });
+            results = "<li>" + results + "</li>";
+            $scope.user.keywords= $sce.trustAsHtml(results);
+            // 输出数据sentences
+            results = "";
+            angular.forEach(data.sentences, function(sentence){
+                results = results + "<li>" + sentence["sentence_join"] + " " + sentence["SR"] + "</li>";
+            });
+            $scope.user.sentences= $sce.trustAsHtml(results);
+        });
+	}
+});
+</script>
+</body>
+</html>
