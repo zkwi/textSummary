@@ -4,7 +4,7 @@ import json
 app = Flask(__name__)
 
 @app.route('/api/getSummary/', methods=['GET', 'POST'])
-def hello_world():
+def getSummary():
 	content = dict()
 	try:
 		content = request.json
@@ -32,3 +32,7 @@ def index():
 if __name__ == '__main__':
 	app.debug = True
 	app.run()
+
+def test():
+	getSummary()
+	index()
