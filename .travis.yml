@@ -10,5 +10,5 @@ install:
   - pip install jieba
   - pip install pymining
 # command to run tests
-script: nosetests
+script: 
   - python web.py
