@@ -1,0 +1,14 @@
+language: python
+python:
+  - "3.5"
+  # does not have headers provided, please ask https://launchpad.net/~pypy/+archive/ppa
+  # maintainers to fix their pypy-dev package.
+  - "pypy"
+# command to install dependencies
+install:
+  - pip install flask
+  - pip install jieba
+  - pip install pymining
+# command to run tests
+script: nosetests
+  - python web.py
