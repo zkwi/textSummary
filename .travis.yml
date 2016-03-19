@@ -6,4 +6,4 @@ install:
   - pip install jieba
   - pip install pymining
 script: 
-  - python web.py test
+  - python test
