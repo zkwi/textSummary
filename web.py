@@ -36,3 +36,4 @@ if __name__ == '__main__':
 def test():
 	getSummary()
 	index()
+	exit()
