@@ -1,6 +1,5 @@
 #encoding=utf-8
-import jieba
-import jieba.analyse
+import jieba.analyse, jieba.posseg
 import copy
 
 def splitSentence(text):
@@ -39,17 +38,24 @@ def calcKeywords(sentences):
 	# 计算频繁项集
 	from pymining import itemmining
 	item_sets = itemmining.relim(itemmining.get_relim_input(sentences), min_support=2)
-	# 合并频繁项集D(I)item_sets
-	keywords = set()
+	items = set()
 	for item in item_sets:
-		keywords = keywords | item # 进行并集计算
-	# 计算tf_idfs值，取出排名靠前的20个词
-	words_text = " ".join(keywords)
-	words_best = jieba.analyse.extract_tags(words_text, topK=10)
-	keywords = set()
-	for t in words_best:
-		keywords.add(t)
-	return list(keywords)
+		items = items | item
+	text = " ".join(items) # 进行并集计算
+	# 计算tf-idfs，取出排名靠前的10个词
+	words_best = jieba.analyse.extract_tags(text, topK=10)
+	text = ""
+	for w in words_best:
+		text = text + " " + w
+	# 计算词性，提取名词和动词
+	words = jieba.posseg.cut(text)
+	keywords = list()
+	for w in words:
+		flag = w.flag
+		word = w.word
+		if flag.find('n') >= 0 or flag.find('v') >= 0:
+			keywords.append(word)
+	return keywords
 
 def calcSummary(sentences, srs, keywords):
 	# 通过贪心算法计算摘要
