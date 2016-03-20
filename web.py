@@ -17,7 +17,7 @@ def getSummary():
 	text = content['text']
 	import api.getSummary
 	results = api.getSummary.getSummary(text)
-	
+	print(results)
 	return 	json.dumps(results)
 
 @app.route('/')
