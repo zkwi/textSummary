@@ -17,7 +17,11 @@ def getSummary():
 	text = content['text']
 	import api.getSummary
 	results = api.getSummary.getSummary(text)
+<<<<<<< HEAD
 	print(results)
+=======
+	
+>>>>>>> refs/remotes/origin/master
 	return 	json.dumps(results)
 
 @app.route('/')
