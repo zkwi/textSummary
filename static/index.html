@@ -61,8 +61,8 @@ app.controller('formCtrl', function($scope, $http, $sce) {
             $scope.user.keywords= $sce.trustAsHtml(results);
             // 输出数据sentences
             results = "";
-            angular.forEach(data.sentences, function(sentence){
-                results = results + "<li>" + sentence["sentence_join"] + " " + sentence["SR"] + "</li>";
+            angular.forEach(data.summary, function(sentence){
+                results = results + "<li>" + sentence + "</li>";
             });
             $scope.user.sentences= $sce.trustAsHtml(results);
         });
