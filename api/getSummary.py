@@ -16,7 +16,7 @@ def getSummary(text):
 		else:
 			sentence.append(word)
 	# 去重
-	sentences =  [list(x) for x in set(tuple(x) for x in sentences)]
+	sentences = [list(x) for x in set(tuple(x) for x in sentences)]
 	# 提取tf-idf值
 	tf_idfs = jieba.analyse.extract_tags(text, topK=len(words_list), withWeight=True)
 	# 计算SR的值
@@ -58,6 +58,9 @@ def getSummary(text):
 	for t in words_best:
 		D.add(t)
 
+	results = dict()
+	results["keywords"] = list(D)
+
 	# 通过贪心算法计算
 	for sentence in document:
 		sentence["SC"] = 0
@@ -66,10 +69,7 @@ def getSummary(text):
 				sentence["SC"] = 1
 				D.remove(word)
 	# 提取出关键句，并且要求句子由至少3个词组成
-	results = dict()
-	results["keywords"] = list(D)
 	results["document"] = document
-
 	return results
 
 r = getSummary(open("api//data.txt", encoding="utf-8").read())
