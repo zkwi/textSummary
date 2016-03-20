@@ -3,26 +3,22 @@ import jieba
 import jieba.analyse 
 # 读取文档
 def getSummary(text):
-	#　text = open("api//data4.txt", encoding='utf-8').read()
 	# 对文档进行分词、分句
 	jieba.analyse.set_stop_words("api//stop_words.txt")
 	words_generator = jieba.cut(text, cut_all=False)
 	words_list = list()
 	sentences = list() # 分词后的句子集
 	sentences_filter = list() # 去掉停止后的句子集合
-	sentences_filter_unique = list() # 对sentences_filter中的每个句子去重后的集合
 	sentence = list() # 包含停止词
 	sentence_filter = list() # 去掉停止词
-	sentence_stopwords = [ ".", "!", "?",  "。", "！", "？", "\n"] #分句
 	stopwords = list()
 	for line in open("api//stop_words.txt", encoding='utf-8').readlines():
 		stopwords.append(line.strip('\n'))
 	for word in words_generator:
-		if word in sentence_stopwords:
-			# 遇到句子分隔符，则拆成一个句子
+		# 遇到句子分隔符，则拆成一个句子
+		if word in ["!",  "。", "？", "\n"]:
 			sentences.append(sentence)
 			sentences_filter.append(sentence_filter)
-			sentences_filter_unique.append(list(set(sentence_filter)))
 			sentence = []
 			sentence_filter =[]
 		else:
@@ -34,7 +30,8 @@ def getSummary(text):
 	tf_idfs = jieba.analyse.extract_tags(text, topK=len(words_list), withWeight=True)
 	# 计算SR的值
 	srs = list()
-	for sentence_filter_unique in sentences_filter_unique:
+	for sentence in sentences_filter:
+		sentence_filter_unique = list(set(sentence))
 		sum = 0
 		for word in sentence_filter_unique:
 			for t in tf_idfs:
@@ -61,43 +58,36 @@ def getSummary(text):
 			continue
 		sentence = dict()
 		sentence["sentence"] = sentences[i]
-		sentence["sentence_join"] = "".join(sentences[i])
-		sentence["sentence_filter"] = sentences_filter[i]
+		sentence["sentence_join"] = "".join(sentences[i]).strip()
 		# 此处，原算法是加权值，但我认为加权之后偏向于输出短句，效果不好，因此修改为不加要权
 		# sentence["SR"] = srs[i] / len(sentence["sentence"])
 		sentence["SR"] = srs[i] # 相关性
 		document.append(sentence)
-
 	document = sorted(document, key=lambda k: k['SR'], reverse=True) # 按SR也就是相关性进行倒序
+
 	# 计算频繁项集
 	from pymining import itemmining
 	item_sets = itemmining.relim(itemmining.get_relim_input(sentences_filter), min_support=2)
 	# 合并频繁项集D(I)item_sets
 	D = set()
-	D_temp = set() # 创建一个临时变量，存储超过2个字符的词
 	for item in item_sets:
-		D = D | item # 进行并集计算
-	for i in D:
-		if len(i) >= 2:
-			D_temp.add(i)
+		if len(item) >= 2:
+			D = D | item # 进行并集计算
 	# 计算tf_idfs值，取出排名靠前的20个词
-	words_text = " ".join(D_temp)
+	words_text = " ".join(D)
 	tf_idfs = jieba.analyse.extract_tags(words_text, topK=len(words_list), withWeight=True)
-	D_temp = set()
-	for t in tf_idfs:
-		if len(D_temp) <= 20:
-			D_temp.add(t[0])
-	import copy
-	D = copy.deepcopy(D_temp)
 	print("通过频繁项集计算出来的词组", D)
+	for t in tf_idfs:
+		if len(D) <= 20:
+			D.add(t[0])
+
 	# 通过贪心算法计算
 	for sentence in document:
 		sentence["SC"] = 0
 		for word in sentence["sentence"]:
-			if word in D_temp:
+			if word in D:
 				sentence["SC"] = 1
-				D_temp.remove(word)
-	print("")
+				D.remove(word)
 	print("摘要句子, 相关性")
 	# 提取出关键句，并且要求句子由至少3个词组成
 	results = dict()
@@ -111,7 +101,7 @@ def getSummary(text):
 			results["sentences"].append(results_sentence)
 			print(sentence["sentence_join"], sentence["SR"])
 	return results
-'''
+
 r = getSummary(open("api//data.txt", encoding="utf-8").read())
 print(r)
-'''
+
