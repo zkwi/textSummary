@@ -74,7 +74,8 @@ def calcSummary(sentences, srs, keywords):
 			summary.append(s)
 	return summary
 
-def getSummary(text):
+def getSummary(text, title):
+	print(title)
 	sentences = splitSentence(text)
 	srs = calcSentenceRank(text, copy.deepcopy(sentences))
 	keywords = calcKeywords(copy.deepcopy(sentences))
@@ -83,6 +84,3 @@ def getSummary(text):
 	results["keywords"] = keywords
 	results["summary"] = summary
 	return results
-
-r = getSummary(open("api//data.txt", encoding="utf-8").read())
-print(r)

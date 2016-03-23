@@ -15,8 +15,9 @@ def getSummary():
 	if 'text' not in content:
 		return "error:-1 text字段为空"
 	text = content['text']
+	title = content['title']
 	import api.getSummary
-	results = api.getSummary.getSummary(text)
+	results = api.getSummary.getSummary(text, title)
 	return 	json.dumps(results)
 
 @app.route('/')

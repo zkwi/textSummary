@@ -18,11 +18,12 @@
     <div class="col-xs-5">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <h3 class="panel-title">请输入正文</h3>
+          <h3 class="panel-title">输入正文</h3>
         </div>
         <div class="panel-body">
           <form role="form" novalidate>
-            <textarea  ng-model="user.text" ng-blur="getSummary()" class="form-control" rows="35"></textarea>
+            标题：<textarea  ng-model="user.text" ng-blur="getSummary()" class="form-control" rows="3"></textarea>
+            <br>正文：<textarea  ng-model="user.title" ng-blur="getSummary()" class="form-control" rows="30"></textarea>
           </form>
         </div>
       </div>
@@ -50,6 +51,7 @@ app.controller('formCtrl', function($scope, $http, $sce) {
         // POST提交数据到接口，/api/getSummary
         var mydata = new Object();
         mydata.text = $scope.user.text;
+        mydata.title = $scope.user.title;
 		$http.post('/api/getSummary/', mydata)
         .success(function(data){
             // 输出数据keywords
