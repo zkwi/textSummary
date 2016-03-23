@@ -54,7 +54,24 @@ def calcKeywords(sentences):
 		flag = w.flag
 		word = w.word
 		if flag.find('n') >= 0 or flag.find('v') >= 0:
-			keywords.append(word)
+			if len(word) > 1:
+				keywords.append(word)
+	return keywords
+
+def calcKeywordsByTitle(title):
+	words_best = jieba.analyse.extract_tags(title, topK=10)
+	text = ""
+	for w in words_best:
+		text = text + " " + w
+	# 计算词性，提取名词和动词
+	words = jieba.posseg.cut(text)
+	keywords = list()
+	for w in words:
+		flag = w.flag
+		word = w.word
+		if flag.find('n') >= 0 or flag.find('v') >= 0:
+			if len(word) > 1:
+				keywords.append(word)
 	return keywords
 
 def calcSummary(sentences, srs, keywords):
@@ -75,10 +92,11 @@ def calcSummary(sentences, srs, keywords):
 	return summary
 
 def getSummary(text, title):
-	print(title)
 	sentences = splitSentence(text)
 	srs = calcSentenceRank(text, copy.deepcopy(sentences))
-	keywords = calcKeywords(copy.deepcopy(sentences))
+	keywords1 = calcKeywords(copy.deepcopy(sentences))
+	keywords2 = calcKeywordsByTitle(title)
+	keywords = list(set(keywords1+keywords2))
 	summary = calcSummary(sentences, srs, copy.deepcopy(keywords))
 	results = dict()
 	results["keywords"] = keywords

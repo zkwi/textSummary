@@ -14,11 +14,14 @@ def getSummary():
 		return "error:-2 请求json格式错误"
 	if 'text' not in content:
 		return "error:-1 text字段为空"
+	if 'title' not in content:
+		return "error:-1 title字段为空"
 	text = content['text']
 	title = content['title']
 	import api.getSummary
 	results = api.getSummary.getSummary(text, title)
-	return 	json.dumps(results)
+	print(results)
+	return json.dumps(results)
 
 @app.route('/')
 def index():
