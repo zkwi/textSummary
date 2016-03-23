@@ -1,6 +1,6 @@
 from flask import Flask, request
 import json
-import os
+import os, sys
 app = Flask(__name__)
 
 @app.route('/api/getSummary/', methods=['GET', 'POST'])
@@ -29,4 +29,6 @@ def index():
 
 
 if __name__ == '__main__':
+    port = os.environ.get("PORT", "5000")
+    sys.argv[1] = port
 	app.run()
