@@ -1,1 +1,1 @@
-web: gunicorn textsummary.wsgi --log-file -
+web: python app.py
