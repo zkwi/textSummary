@@ -1,0 +1,16 @@
+{
+  "name": "textSummary",
+  "scripts": {
+    "postdeploy": "app.py"
+  },
+  "env": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "urn:buildpack:heroku/python"
+    }
+  ]
+}
