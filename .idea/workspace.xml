@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c87bd51b-149b-484d-b442-a0ce247cf581" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Procfile" afterPath="$PROJECT_DIR$/Procfile" />
     </list>
     <ignored path="web.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -732,7 +731,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458730665878</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="增加requirements.txt，尝试配置heroku 0.20">
+      <created>1458730904064</created>
+      <option name="number" value="00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1458730904064</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -787,7 +792,8 @@
     <MESSAGE value="增加requirements.txt，尝试配置heroku 0.12" />
     <MESSAGE value="增加requirements.txt，尝试配置heroku 0.13" />
     <MESSAGE value="增加requirements.txt，尝试配置heroku 0.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加requirements.txt，尝试配置heroku 0.1" />
+    <MESSAGE value="增加requirements.txt，尝试配置heroku 0.20" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加requirements.txt，尝试配置heroku 0.20" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
