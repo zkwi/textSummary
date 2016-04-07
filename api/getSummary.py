@@ -74,7 +74,7 @@ def calcKeywordsByTitle(title):
 				keywords.append(word)
 	return keywords
 
-def calcSummary(sentences, srs, keywords):
+def calcSummary(sentences, srs, keywords, length):
 	# 通过贪心算法计算摘要
 	summary = list()
 	sentences = [x for (y,x) in sorted(zip(srs,sentences))]
@@ -89,6 +89,8 @@ def calcSummary(sentences, srs, keywords):
 			s = "".join(sentence)
 			s = s.strip()
 			summary.append(s)
+	if len(summary) >= length:
+		summary = summary[0:length]
 	return summary
 
 def getSummary(text, title):
@@ -97,7 +99,7 @@ def getSummary(text, title):
 	keywords1 = calcKeywords(copy.deepcopy(sentences))
 	keywords2 = calcKeywordsByTitle(title)
 	keywords = list(set(keywords1+keywords2))
-	summary = calcSummary(sentences, srs, copy.deepcopy(keywords))
+	summary = calcSummary(sentences, srs, copy.deepcopy(keywords), 3)
 	results = dict()
 	results["keywords"] = keywords
 	results["summary"] = summary
