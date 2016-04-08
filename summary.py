@@ -2,6 +2,7 @@
 import jieba.analyse
 import jieba.posseg
 import copy
+import snownlp
 
 class TextSummary:
 	text = ""
@@ -105,7 +106,12 @@ class TextSummary:
 			if isSummary:
 				s = "".join(sentence)
 				s = s.strip()
-				summary.append(s)
+				# 通过snownlp计算句子情感值
+				sentiments = snownlp.SnowNLP(s).sentiments #
+				se = dict()
+				se["sentence"] = s
+				se["sentiments"] = round(sentiments, 2)
+				summary.append(se)
 		self.summary = summary
 
 	def getSummary(self):
@@ -116,10 +122,10 @@ class TextSummary:
 		self.__calcSummary()
 
 	def printResults(self, length=3):
-		print(self.keywords)
-		if len(self.summary) <= length or length<=0:
+		# print(self.keywords)
+		print(self.title)
+		if len(self.summary) <= length or length <= 0:
 			length = len(self.summary)
-
 		for i in range(0, length):
-			print("("+str(i)+") " + self.summary[i])
+			print("("+str(i)+") " + self.summary[i]["sentence"] + " " + str(self.summary[i]["sentiments"]))
 		print("")

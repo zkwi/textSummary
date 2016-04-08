@@ -64,7 +64,7 @@ app.controller('formCtrl', function($scope, $http, $sce) {
             // 输出数据sentences
             results = "";
             angular.forEach(data.summary, function(sentence){
-                results = results + "<li>" + sentence + "</li>";
+                results = results + "<li>" + sentence.sentence + " (情感倾向：" + sentence.sentiments + ")" + "</li>";
             });
             $scope.user.sentences= $sce.trustAsHtml(results);
         });

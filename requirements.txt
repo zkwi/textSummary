@@ -1,3 +1,4 @@
 Flask
 jieba
 pymining
+snownlp
