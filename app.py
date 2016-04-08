@@ -18,8 +18,12 @@ def getSummary():
 		return "error:-1 title字段为空"
 	text = content['text']
 	title = content['title']
-	import api.getSummary
-	results = api.getSummary.getSummary(text, title)
+	import summary
+	s = summary.TextSummary(text, title)
+	s.getSummary()
+	results = dict()
+	results["keywords"] = s.keywords
+	results["summary"] = s.summary
 	return json.dumps(results)
 
 @app.route('/')
@@ -30,3 +34,4 @@ def index():
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", "5000"))
 	app.run(host='0.0.0.0', port = port)
+	# app.run()
