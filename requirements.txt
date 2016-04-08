@@ -2,3 +2,4 @@ Flask
 jieba
 pymining
 snownlp
+selenium

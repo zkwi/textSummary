@@ -22,8 +22,9 @@
         </div>
         <div class="panel-body">
           <form role="form" novalidate>
-            标题：<textarea  ng-model="user.title" ng-blur="getSummary()" class="form-control" rows="2"></textarea>
-            <br>正文：<textarea  ng-model="user.text" ng-blur="getSummary()" class="form-control" rows="28"></textarea>
+              标题：<textarea  ng-model="user.title"  class="form-control" rows="2"></textarea>
+              <br>正文：<textarea  ng-model="user.text" class="form-control" rows="24"></textarea>
+              <br><button type="button" id="getSummary" class="form-control btn btn-success" ng-click="getSummary()">生成摘要</button>
           </form>
         </div>
       </div>
