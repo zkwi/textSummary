@@ -110,8 +110,9 @@ class TextSummary:
 				sentiments = snownlp.SnowNLP(s).sentiments #
 				se = dict()
 				se["sentence"] = s
-				se["sentiments"] = round(sentiments, 2)
+				se["sentiments"] = sentiments
 				summary.append(se)
+		summary = sorted(summary, key=lambda k: k['sentiments'])
 		self.summary = summary
 
 	def getSummary(self):
@@ -121,11 +122,18 @@ class TextSummary:
 		self.__calcKeywordsByTitle()
 		self.__calcSummary()
 
-	def printResults(self, length=3):
+	def printResults(self, length=2):
 		# print(self.keywords)
 		print(self.title)
-		if len(self.summary) <= length or length <= 0:
-			length = len(self.summary)
+		if len(self.summary) <= length/2 or length <= 0:
+			length = int(len(self.summary)/2)
+		j = 0
 		for i in range(0, length):
-			print("("+str(i)+") " + self.summary[i]["sentence"] + " " + str(self.summary[i]["sentiments"]))
+			j = j + 1
+			index = i
+			print("("+str(j)+") " + self.summary[index]["sentence"] + " " + str(self.summary[index]["sentiments"]))
+		for i in range(0, length):
+			j = j + 1
+			index = len(self.summary) - i - 1
+			print("("+str(j)+") " + self.summary[index]["sentence"] + " " + str(self.summary[index]["sentiments"]))
 		print("")
