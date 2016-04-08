@@ -1,6 +1,6 @@
 from flask import Flask, request
 import json
-import os, sys
+import os
 app = Flask(__name__)
 
 @app.route('/api/getSummary/', methods=['GET', 'POST'])
