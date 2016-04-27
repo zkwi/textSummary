@@ -52,14 +52,21 @@ class TextSummary:
 
 	def __calcKeywords(self):
 		# 计算tf-idfs，取出排名靠前的10个词
-		words_best = jieba.analyse.extract_tags(self.text, topK=10)
+		words_best = list()
+		words_best = words_best + jieba.analyse.extract_tags(self.text, topK=15)
+		# 提取第一段的关键词
+		parts = self.text.lstrip().split("\n")
+		firstpart = ""
+		if len(parts) >= 1:
+			firstpart = parts[0]
+		words_best = words_best + jieba.analyse.extract_tags(firstpart, topK=5)
+		# 提取title中的关键词
+		words_best =  words_best + jieba.analyse.extract_tags(self.title, topK=3)
+		# 将结果合并成一个兔子，并进行分词
 		text = ""
 		for w in words_best:
 			text = text + " " + w
-		# 提取title中的关键词
-		words_best = jieba.analyse.extract_tags(self.title, topK=5)
-		for w in words_best:
-			text = text + " " + w
+
 		# 计算词性，提取名词和动词
 		words = jieba.posseg.cut(text)
 		keywords = list()
@@ -106,15 +113,15 @@ class TextSummary:
 	def PrintResults(self, length=2):
 		# print(self.keywords)
 		print(self.title)
-		if len(self.summary) <= length/2 or length <= 0:
+		if length >= len(self.summary)/2  or length <= 0:
 			length = int(len(self.summary)/2)
 		j = 0
 		for i in range(0, length):
 			j = j + 1
 			index = i
-			print("("+str(j)+") " + self.summary[index]["sentence"] + " " + str(self.summary[index]["sentiments"]))
+			print("("+str(j)+") " + self.summary[index]["sentence"])
 		for i in range(0, length):
 			j = j + 1
 			index = len(self.summary) - i - 1
-			print("("+str(j)+") " + self.summary[index]["sentence"] + " " + str(self.summary[index]["sentiments"]))
+			print("("+str(j)+") " + self.summary[index]["sentence"])
 		print("")
