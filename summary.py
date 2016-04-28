@@ -62,11 +62,10 @@ class TextSummary:
 		words_best = words_best + jieba.analyse.extract_tags(firstpart, topK=5)
 		# 提取title中的关键词
 		words_best =  words_best + jieba.analyse.extract_tags(self.title, topK=3)
-		# 将结果合并成一个兔子，并进行分词
+		# 将结果合并成一个句子，并进行分词
 		text = ""
 		for w in words_best:
 			text = text + " " + w
-
 		# 计算词性，提取名词和动词
 		words = jieba.posseg.cut(text)
 		keywords = list()
@@ -76,7 +75,11 @@ class TextSummary:
 			if flag.find('n') >= 0 or flag.find('v') >= 0:
 				if len(word) > 1:
 					keywords.append(word)
-		self.keywords = list(set(self.keywords+keywords))
+		keywords = keywords + jieba.analyse.textrank(self.text, topK=10, withWeight=False, allowPOS=('ns', 'n', 'vn', 'v'))
+		keywords = jieba.analyse.extract_tags(" ".join(keywords), topK=20)
+		keywords = list(set(keywords))
+		print(keywords)
+		self.keywords = keywords
 
 	def __calcSummary(self):
 		# 通过贪心算法计算摘要
@@ -101,7 +104,6 @@ class TextSummary:
 				se["sentence"] = s
 				se["sentiments"] = sentiments
 				summary.append(se)
-		summary = sorted(summary, key=lambda k: k['sentiments'])
 		self.summary = summary
 
 	def GetSummary(self):
@@ -111,17 +113,22 @@ class TextSummary:
 		self.__calcSummary()
 
 	def PrintResults(self, length=2):
-		# print(self.keywords)
 		print(self.title)
-		if length >= len(self.summary)/2  or length <= 0:
-			length = int(len(self.summary)/2)
+		'''
+		text = ""
+		for s in self.summary:
+			text = text + s["sentence"]
+		print(text)'''
+		summary = sorted(self.summary, key=lambda k: k['sentiments'])
+		if length >= len(summary)/2 or length <= 0:
+			length = int(len(summary)/2)
 		j = 0
 		for i in range(0, length):
 			j = j + 1
 			index = i
-			print("("+str(j)+") " + self.summary[index]["sentence"])
+			print("("+str(j)+") " + summary[index]["sentence"])
 		for i in range(0, length):
 			j = j + 1
-			index = len(self.summary) - i - 1
-			print("("+str(j)+") " + self.summary[index]["sentence"])
+			index = len(summary) - i - 1
+			print("("+str(j)+") " + summary[index]["sentence"])
 		print("")
