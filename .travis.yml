@@ -4,8 +4,5 @@ python:
 install:
   - pip install flask
   - pip install jieba
-  - pip install pymining
-  - pip install snownlp
-  - pip install selenium
 script: 
-  - python test.py
+  - python textsummary.py

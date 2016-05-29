@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
-<title>首页</title>
+<title>文档摘要生成</title>
 <link rel = "Shortcut Icon" href=/static/favicon.ico>
 <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.js"></script>
 <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
@@ -9,14 +9,11 @@
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="http://cdn.bootcss.com/angular.js/1.4.9/angular.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    body {font-family: 微软雅黑;}
-</style>
+<style> body {font-family: 微软雅黑;} </style>
 </head>
-
 <body>
 <div class="container" ng-app="myApp" ng-controller="formCtrl">
-  <h2>多文档摘要生成系统 </h2>
+    <br>
   <div class="row" >
     <div class="col-xs-5">
       <div class="panel panel-primary">
@@ -38,8 +35,7 @@
           <h3 class="panel-title">摘要</h3>
         </div>
         <div class="panel-body">
-          关键词：<ul><span ng-bind-html="keywords"></span></ul>
-         关键句：
+         摘要：
           <ul>
           <span ng-bind-html="sentences"></span>
           </ul>
@@ -48,55 +44,29 @@
     </div>
   </div>
 </div>
+</body>
 <script>
 var app = angular.module('myApp', []);
 app.controller('formCtrl', function($scope, $http, $sce) {
-    $http.get('/static/test.json')
+    $http.get('/static/testdata/test4.json')
         .success(function(data){
             $scope.title = data.title;
             $scope.text = data.text;
-
         });
-
 	$scope.getSummary = function () {
         // POST提交数据到接口，/api/getSummary
         var mydata = new Object();
         mydata.text = $scope.text;
         mydata.title = $scope.title;
-		$http.post('/api/getSummary/', mydata)
+        results = "";
+		$http.post('/api/CalcSummary/', mydata)
         .success(function(data){
-            // 输出数据keywords
-            var results = "";
-            angular.forEach(data.keywords, function(keyword){
-                results = results + keyword + "  " ;
-            });
-            results = "<li>" + results + "</li>";
-            $scope.keywords= $sce.trustAsHtml(results);
-            // 输出数据sentences
-            results = "";
-            angular.forEach(data.summary, function(sentence){
-                var sentiments = parseInt(sentence.sentiments*10);
-                var color = "text-success";
-                if(sentiments<=2){
-                    color = "text-danger";
-                }else if(sentiments<=4){
-                    color = "text-warning";
-                }else if(sentiments<=6){
-                    color = "text-muted";
-                }else if(sentiments<=8) {
-                    color = "text-primary";
-                }else{
-                    color = "text-success";
-                }
-                angular.forEach(data.keywords, function(keyword){
-                    sentence.sentence = sentence.sentence.replace(keyword, "<b>" + keyword + "</b>");
-                });
-                results = results + '<li><p class ="' + color +'">' + sentence.sentence + '</p></li>';
+            angular.forEach(data, function(sentence){
+              results = results + '<li>' + sentence + '</li>';
             });
             $scope.sentences= $sce.trustAsHtml(results);
         });
 	}
 });
 </script>
-</body>
 </html>

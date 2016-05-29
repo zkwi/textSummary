@@ -1,7 +1,9 @@
 #encoding=utf-8
 import jieba.analyse
 import jieba.posseg
-import copy
+import os
+from flask import Flask, request
+import json
 
 class TextSummary:
 	text = ""
@@ -150,7 +152,7 @@ class TextSummary:
 		self.sentences = sorted(self.sentences, key=lambda k: k['weight'], reverse=True)
 
 		# 根据排序结果，取排名占前X%的句子作为摘要
-		print(len(self.sentences))
+		# print(len(self.sentences))
 		for i in range(len(self.sentences)):
 			if i < ratio * len(self.sentences):
 				sentence = self.sentences[i]
@@ -158,8 +160,30 @@ class TextSummary:
 
 		return self.summary
 
-from flask import Flask, request
-import json
+
+def test():
+	text = open("static/testdata/rujia1.txt", encoding="utf-8").read()
+	title = "如家道歉遇袭事件称努力改正 当事人曾就职浙江某媒体"
+	textsummary = TextSummary()
+	textsummary.SetText(title, text)
+	summary = textsummary.CalcSummary()
+	print(summary)
+
+	text = open("static/testdata/rujia2.txt", encoding="utf-8").read()
+	title = "女生如家遇袭事件发酵 如家承认管理有瑕疵"
+	textsummary = TextSummary()
+	textsummary.SetText(title, text)
+	summary = textsummary.CalcSummary()
+	print(summary)
+
+	text = open("static/testdata/rujia3.txt", encoding="utf-8").read()
+	title = "如家发布会仅5分钟不设提问环节被指没诚意 专家：难辞其咎"
+	textsummary = TextSummary()
+	textsummary.SetText(title, text)
+	summary = textsummary.CalcSummary()
+	print(summary)
+
+test()
 app = Flask(__name__)
 
 @app.route('/api/CalcSummary/', methods=['GET', 'POST'])
@@ -178,23 +202,8 @@ def CalcSummary():
 @app.route('/')
 def index():
 	# 直接返回静态文件
-	return app.send_static_file("test.html")
+	return app.send_static_file("index.html")
 if __name__ == '__main__':
 	# app.run(debug=True)
 	port = int(os.environ.get("PORT", "5000"))
 	app.run(host='0.0.0.0', port=port,debug=True)
-'''
-# 初始化变量
-title = "酒店道歉称努力改正 当事人表示“太失望”　"
-text = open("testdata/rujia1.txt", encoding="utf-8").read()
-# 初始化文本摘要类
-textsummary = TextSummary()
-# 设置欲摘要文本的标题、正文
-textsummary.SetText(title, text)
-# 计算摘要
-textsummary.CalcSummary(0.2)
-# 打印摘要结果
-print(textsummary.keywords)
-for s in textsummary.summary:
-	print(s)
-	'''
