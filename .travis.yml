@@ -5,4 +5,4 @@ install:
   - pip install flask
   - pip install jieba
 script: 
-  - python textsummary.py
+  - python test.py

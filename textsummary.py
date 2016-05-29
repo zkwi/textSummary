@@ -1,9 +1,6 @@
 #encoding=utf-8
 import jieba.analyse
 import jieba.posseg
-import os
-from flask import Flask, request
-import json
 
 class TextSummary:
 	text = ""
@@ -161,49 +158,3 @@ class TextSummary:
 		return self.summary
 
 
-def test():
-	text = open("static/testdata/rujia1.txt", encoding="utf-8").read()
-	title = "如家道歉遇袭事件称努力改正 当事人曾就职浙江某媒体"
-	textsummary = TextSummary()
-	textsummary.SetText(title, text)
-	summary = textsummary.CalcSummary()
-	print(summary)
-
-	text = open("static/testdata/rujia2.txt", encoding="utf-8").read()
-	title = "女生如家遇袭事件发酵 如家承认管理有瑕疵"
-	textsummary = TextSummary()
-	textsummary.SetText(title, text)
-	summary = textsummary.CalcSummary()
-	print(summary)
-
-	text = open("static/testdata/rujia3.txt", encoding="utf-8").read()
-	title = "如家发布会仅5分钟不设提问环节被指没诚意 专家：难辞其咎"
-	textsummary = TextSummary()
-	textsummary.SetText(title, text)
-	summary = textsummary.CalcSummary()
-	print(summary)
-
-test()
-app = Flask(__name__)
-
-@app.route('/api/CalcSummary/', methods=['GET', 'POST'])
-def CalcSummary():
-	data = request.data
-	data = data.decode(encoding="utf-8")
-	content = json.loads(data)
-	text = content['text']
-	title = content['title']
-	textsummary = TextSummary()
-	textsummary.SetText(title, text)
-	summary = textsummary.CalcSummary()
-	print(summary)
-	return json.dumps(summary)
-
-@app.route('/')
-def index():
-	# 直接返回静态文件
-	return app.send_static_file("index.html")
-if __name__ == '__main__':
-	# app.run(debug=True)
-	port = int(os.environ.get("PORT", "5000"))
-	app.run(host='0.0.0.0', port=port,debug=True)

@@ -1,1 +1,1 @@
-web: python testsummary.py
+web: python app.py
