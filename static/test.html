@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<title>文档摘要生成</title>
+<link rel = "Shortcut Icon" href=/static/favicon.ico>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.js"></script>
+<link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.css" rel="stylesheet">
+<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="http://cdn.bootcss.com/angular.js/1.4.9/angular.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style> body {font-family: 微软雅黑;} </style>
+</head>
+<body>
+<div class="container" ng-app="myApp" ng-controller="formCtrl">
+    <br>
+  <div class="row" >
+    <div class="col-xs-5">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">输入正文</h3>
+        </div>
+        <div class="panel-body">
+          <form role="form" novalidate>
+              标题：<textarea  ng-model="title"  class="form-control" rows="2"></textarea>
+              <br>正文：<textarea  ng-model="text" class="form-control" rows="24"></textarea>
+              <br><button type="button" id="getSummary" class="form-control btn btn-success" ng-click="getSummary()">生成摘要</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-7">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h3 class="panel-title">摘要</h3>
+        </div>
+        <div class="panel-body">
+         摘要：
+          <ul>
+          <span ng-bind-html="sentences"></span>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+var app = angular.module('myApp', []);
+app.controller('formCtrl', function($scope, $http, $sce) {
+    $http.get('/static/test4.json')
+        .success(function(data){
+            $scope.title = data.title;
+            $scope.text = data.text;
+        });
+	$scope.getSummary = function () {
+        // POST提交数据到接口，/api/getSummary
+        var mydata = new Object();
+        mydata.text = $scope.text;
+        mydata.title = $scope.title;
+        results = "";
+		$http.post('/api/CalcSummary/', mydata)
+        .success(function(data){
+            angular.forEach(data, function(sentence){
+              results = results + '<li>' + sentence + '</li>';
+            });
+            $scope.sentences= $sce.trustAsHtml(results);
+        });
+	}
+});
+</script>
+</html>
